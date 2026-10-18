@@ -199,6 +199,80 @@ class WorkflowTests(unittest.TestCase):
         self.assertEqual(self.client.get("/api/research/job-test-1").json()["status"],"done")
         self.assertEqual(self.client.get("/api/research/nope").status_code,404)
 
+    def test_question_research_extracts_company_flags_and_verdict(self):
+        async def run():
+            job={"id":"job-test-3","company":"","question":"We plan to buy train brakes from a French company called Real Example. Good option?","context":"Rail component procurement","started":m.time.time(),"created":m.time.time(),"steps":[],"sources":[],"status":"queued"}
+            responses=[{"content":json.dumps({"company":"Real Example","component":"train brakes","country":"France"})},
+                       {"content":json.dumps({"queries":["identity","products","news"]})},
+                       {"content":json.dumps({"follow_up_query":"Real Example strike Lyon","reason":"Labour unrest near the plant"})},
+                       {"content":"**VERDICT: Hold** — strikes near the plant [1].\n## Identity and fit\nRail brakes maker [1]."}]
+            searches=AsyncMock(return_value=[{"title":"News","url":"https://example.com/n","content":"Evidence"}])
+            with patch.object(m,"model",AsyncMock(side_effect=responses)),patch.object(m,"search",searches):
+                await m.do_research(job)
+            self.assertEqual(job["status"],"done",job.get("error"))
+            self.assertEqual((job["company"],job["context"]),("Real Example","train brakes"))
+            self.assertEqual(job["verdict"]["word"],"Hold")
+            self.assertIn("strikes near the plant",job["verdict"]["reason"])
+            self.assertNotIn("VERDICT",job["report"])
+            self.assertTrue(any(s.get("flag") and s["text"].startswith("Red flag") for s in job["steps"]))
+            self.assertTrue(any(s.get("branch") for s in job["steps"]))
+            alt=job["alternatives"]
+            self.assertEqual(alt["total"],len(m.STATE["rows"]))
+            for r in alt["suppliers"]:
+                self.assertGreater(r["delivery"],90)
+                self.assertEqual(set(r["groups"]),set(m.GROUPS))
+        asyncio.run(run())
+
+    def test_unknown_company_falls_back_to_country_risk(self):
+        async def run():
+            job={"id":"job-test-5","company":"","question":"is it ok to buy from French Glooph company now? list alternatives","context":"Supplier procurement","started":m.time.time(),"created":m.time.time(),"steps":[],"sources":[],"status":"queued"}
+            responses=[{"content":json.dumps({"company":"Glooph","component":None,"country":"France"})},
+                       {"content":json.dumps({"queries":["Glooph company France","Glooph supplier reviews","France strikes protests October 2026","France port freight disruption October 2026"]})},
+                       {"content":json.dumps({"company_found":False,"follow_up_query":"France nationwide strike logistics impact","reason":"Nationwide protests are disrupting French freight"})},
+                       {"content":"VERDICT: Hold — no public record of Glooph and French strikes disrupt freight [1].\n## Identity and fit\nNo public record of Glooph could be found.\n## Country and sector conditions\nStrikes [1]."}]
+            searches=AsyncMock(return_value=[{"title":"France strike news","url":"https://example.com/strike","content":"Protests"}])
+            model=AsyncMock(side_effect=responses)
+            with patch.object(m,"model",model),patch.object(m,"search",searches):
+                await m.do_research(job)
+            self.assertEqual(job["status"],"done",job.get("error"))
+            self.assertEqual((job["company"],job["country"]),("Glooph","France"))
+            self.assertFalse(job["company_found"])
+            self.assertEqual(searches.await_count,5)
+            texts=[s["text"] for s in job["steps"]]
+            self.assertTrue(any(t.startswith("No public record of Glooph") for t in texts))
+            self.assertTrue(any(s.get("flag") and "protests" in s["text"] for s in job["steps"]))
+            self.assertTrue(any(s.get("branch") for s in job["steps"]))
+            self.assertEqual(job["verdict"]["word"],"Hold")
+            brief_input=json.loads(model.await_args_list[-1].args[0][1]["content"])
+            self.assertFalse(brief_input["company_found"])
+            self.assertEqual(brief_input["country"],"France")
+        asyncio.run(run())
+
+    def test_question_without_real_company_errors_honestly(self):
+        async def run():
+            job={"id":"job-test-4","company":"","question":"Which supplier is best?","context":"rail","started":m.time.time(),"created":m.time.time(),"steps":[],"sources":[],"status":"queued"}
+            with patch.object(m,"model",AsyncMock(return_value={"content":json.dumps({"company":None,"component":None})})):
+                await m.do_research(job)
+            self.assertEqual(job["status"],"error")
+            self.assertIn("Name the real company",job["error"])
+        asyncio.run(run())
+        self.assertEqual(self.client.post("/api/research",json={}).status_code,422)
+
+    def test_alternatives_screen_on_full_dataset(self):
+        m.install_data(m.read_csv((Path(m.ROOT)/"data/supplier_risk_dataset.csv").read_bytes()),"supplier_risk_dataset.csv")
+        alt=m.alternatives()
+        self.assertEqual(alt["total"],10000)
+        self.assertTrue(0<alt["matched"]<10000)
+        self.assertEqual(len(alt["suppliers"]),10)
+        scores=[r["buyer_score"] for r in alt["suppliers"]]
+        self.assertEqual(scores,sorted(scores))
+
+    def test_verdict_line_is_optional(self):
+        self.assertEqual(m.split_verdict("## Identity\nText [1]"),(None,"## Identity\nText [1]"))
+        verdict,rest=m.split_verdict("VERDICT: avoid - sanctions listing [2]\n\nBody")
+        self.assertEqual(verdict,{"word":"Avoid","reason":"sanctions listing [2]"})
+        self.assertEqual(rest,"Body")
+
     def test_research_provider_error_is_shown_not_hidden(self):
         async def run():
             job={"id":"job-test-2","company":"Real Example","context":"rail","started":m.time.time(),"created":m.time.time(),"steps":[],"sources":[],"status":"queued"}
