@@ -1,6 +1,10 @@
 # Deployment
 
-**Current deployment (18 Oct 2026):** endpoint `gauge-open`, id `aiendpoint-e05xkp1c1mkrv20029`, project `group50-project` (`project-e05pcx4nln00sb3fae3bgx`), registry `registry-e05acvg6r401qqek32`, secret `gauge-secrets`, image `gauge:036fbd3`, env `APP_AUTH=off` (open demo, no login: anyone with the URL can spend the API credits). URL: https://port8000-h1b0vwacrc38sp4.tunnel.applications.uk-south2.nebius.cloud. It replaced the login-protected endpoint `gauge` (`aiendpoint-e05yarz65dfd332df3`, image `gauge:3bceda5`).
+**Current deployment (18 Oct 2026):** endpoint `gauge-v2`, id `aiendpoint-e05bd4vv156q3khy3m`, project `group50-project` (`project-e05pcx4nln00sb3fae3bgx`), registry `registry-e05acvg6r401qqek32`, secret `gauge-secrets`, image `gauge:036fbd3`, env `APP_AUTH=off` (open demo, no login: anyone with the URL can spend the API credits). URL: https://port8000-zkrzh7367ezc7ay.tunnel.applications.uk-south2.nebius.cloud.
+
+It runs main at commit `f620c5d` without a new image build: `deploy/start-from-github.py` is injected with `--inject-file deploy/start-from-github.py:/app/start-from-github.py` and started with `--container-command python --args /app/start-from-github.py`. On start it downloads `app/` and `web/` from the public repo at `GAUGE_COMMIT` (env, full SHA), lays them over the image's code and execs uvicorn exactly like the image CMD; if GitHub is unreachable it starts the image's own code. This only works while dependencies, the CSV and the Dockerfile are unchanged since the image; otherwise build a new image. Nebius limits injected files to 64 KiB in total, so the code itself cannot be injected.
+
+Earlier endpoints: `gauge-open` (`aiendpoint-e05xkp1c1mkrv20029`, image `gauge:036fbd3`, previous UI) and the login-protected `gauge` (`aiendpoint-e05yarz65dfd332df3`, image `gauge:3bceda5`).
 
 Target: one **CPU-only Nebius Serverless Endpoint** in the assigned hackathon project, region `uk-south2`. Nemotron is hosted by Token Factory, so no GPU is used. The helper `deploy/nebius-deploy.sh` wraps every step; each step prints what it will do and only `create` is a billable write.
 

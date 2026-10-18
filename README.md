@@ -3,7 +3,7 @@
 </p>
 
 <p align="center">
-  <a href="https://port8000-h1b0vwacrc38sp4.tunnel.applications.uk-south2.nebius.cloud"><img alt="Live demo" src="https://img.shields.io/badge/%E2%96%B6%20Live%20demo-open%2C%20no%20login-76B900?style=for-the-badge"></a>
+  <a href="https://port8000-zkrzh7367ezc7ay.tunnel.applications.uk-south2.nebius.cloud"><img alt="Live demo" src="https://img.shields.io/badge/%E2%96%B6%20Live%20demo-open%2C%20no%20login-76B900?style=for-the-badge"></a>
   <a href="#run-it-locally"><img alt="Run locally" src="https://img.shields.io/badge/Run%20locally-3%20commands-111113?style=for-the-badge"></a>
 </p>
 
@@ -94,7 +94,7 @@ The dataset's own Total Risk Index (TRI) does not publish its weights, so Gauge 
 
 ## Two-minute demo
 
-1. Open the [live demo](https://port8000-h1b0vwacrc38sp4.tunnel.applications.uk-south2.nebius.cloud). The header shows 10,000 suppliers loaded and Nemotron and Tavily connected.
+1. Open the [live demo](https://port8000-zkrzh7367ezc7ay.tunnel.applications.uk-south2.nebius.cloud). The header shows 10,000 suppliers loaded and Nemotron and Tavily connected.
 2. Type a question into the box, e.g. *"Is it OK to buy from French company X now? List alternatives."* Watch the research plan fill in, the red flag and the "digging deeper" follow-up (a run takes about 30 seconds).
 3. Read the verdict (Go / Hold / Avoid), follow a numbered source, then scroll to the top 10 alternatives.
 4. Press **+ Compare** on two alternatives, then **Open in Compare** and **Explain this tradeoff with Nemotron**.

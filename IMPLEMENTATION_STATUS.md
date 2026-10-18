@@ -16,9 +16,9 @@
 
 ## Deployed and verified on the public URL (18 Oct 2026, 16:45–16:52)
 
-- Endpoint `gauge-open` (`aiendpoint-e05xkp1c1mkrv20029`) in `group50-project`, `cpu-d3` / `2vcpu-8gb`, image `gauge:036fbd3`, platform auth off, `APP_AUTH=off` (no app login). URL: https://port8000-h1b0vwacrc38sp4.tunnel.applications.uk-south2.nebius.cloud
-- Verified 18 Oct 2026: `/healthz` 200; `/` 200 without login; `/api/status` 10,000 rows, auth false; connection test Nemotron and Tavily ok.
-- Replaced the login-protected endpoint `gauge` (`aiendpoint-e05yarz65dfd332df3`, image `gauge:3bceda5`).
+- Endpoint `gauge-v2` (`aiendpoint-e05bd4vv156q3khy3m`) in `group50-project`, `cpu-d3` / `2vcpu-8gb`, image `gauge:036fbd3` with main `f620c5d` overlaid at start by `deploy/start-from-github.py` (see docs/deployment.md), platform auth off, `APP_AUTH=off` (no app login). URL: https://port8000-zkrzh7367ezc7ay.tunnel.applications.uk-south2.nebius.cloud
+- Verified 18 Oct 2026: `/healthz` 200; `/` 200 without login and serves the research screen; `/api/research` accepts a free-text question; `/api/status` 10,000 rows, auth false; connection test Nemotron and Tavily ok.
+- Replaced `gauge-open` (`aiendpoint-e05xkp1c1mkrv20029`, previous UI) and, before it, the login-protected `gauge` (`aiendpoint-e05yarz65dfd332df3`, image `gauge:3bceda5`).
 - `/api/status` reports 10,000 rows; connection test: Nemotron answered, Tavily returned a result.
 - Live chat through the public URL: "switch to financial resilience and explain #1 vs #2" ran `rank_suppliers` → `inspect_suppliers` in 6 s; "inspect SUPP_00003" ran `inspect_suppliers` in 4 s; the browser suggestion button produced a 553-character answer with a visible tool trace.
 - Live research through the public URL: Knorr-Bremse completed in 21 s with 3 planned searches, a follow-up search chosen by Nemotron after it spotted a U.S. DOJ antitrust filing in the excerpts, 16 sources, and a cited brief with no citation warnings. Three completed reports are listed in the research dialog on the deployment.
@@ -28,7 +28,7 @@
 
 - Status / logs / stop / start: `NEBIUS_PROJECT_ID=project-e05pcx4nln00sb3fae3bgx deploy/nebius-deploy.sh status|logs|stop|start`
 - Delete when the event is over: `deploy/nebius-deploy.sh delete-command` prints the command. The endpoint bills about $0.066 per hour until deleted.
-- Image `gauge:036fbd3` (adds the `APP_AUTH=off` switch) is the deployed image. The research screen on the `design-ui` branch is not deployed yet.
+- Image `gauge:036fbd3` (adds the `APP_AUTH=off` switch) is the deployed base image; the research screen from main `f620c5d` is overlaid at start.
 
 ## Known limitations
 
