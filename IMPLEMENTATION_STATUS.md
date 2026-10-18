@@ -10,10 +10,13 @@
 
 - **Tavily live**: the connection test performed a real basic search with the configured key (18 Oct 2026, 16:09). On the corporate laptop this needed the operating-system trust store (`truststore`), now wired in at startup.
 
-## Blocked on credentials or sign-in (not yet verified)
+- **Token Factory live** (18 Oct 2026, 16:20): the connection test got an answer from `nvidia/Nemotron-3.5-Super-VL`. Two agent turns ran real tool calls: "switch to financial resilience and explain #1 vs #2" produced `rank_suppliers` → `inspect_suppliers` with a correct tie-break explanation in 8–10 s; "SUPP_00003 cannot deliver" produced an exclusion merge, recalculation and a hidden-risk explanation of the new leader in 7 s.
+- **Research live**: Knorr-Bremse completed in 17 s: Nemotron planned 3 searches, Tavily returned 12 sources, Nemotron decided no follow-up was needed, and wrote a cited brief with all citations valid. An earlier failure (empty JSON) was traced to reasoning tokens consuming `max_tokens`; JSON steps now run with thinking disabled and empty answers are retried.
+- **Nebius Cloud**: profile `hackathon` authenticated; project `group50-project` (`project-e05pcx4nln00sb3fae3bgx`) readable; CPU platform `cpu-d3` with presets from 2 vCPU / 8 GB ($0.066/h) upward; quotas 20 non-GPU vCPU, 1 registry, 1 public IP; registry `registry-e05acvg6r401qqek32` created; MysteryBox secret `gauge-secrets` created from `.env`.
 
-- Token Factory: the key placed in `.env` is rejected with HTTP 401 ("Couldn't authenticate") and does not look like a Token Factory key. A real Nemotron tool call through `/api/chat` and a cited research report therefore remain unverified live; both paths are exercised with mocks.
-- Nebius deployment: needs the assigned `project-...` ID and a browser login (`nebius profile create hackathon --parent-id <project>`). `deploy/nebius-deploy.sh` then runs preflight, registry, build/push, dry-run and the single confirmed create.
+## In progress
+
+- Image push to `cr.uk-south2.nebius.cloud/e05acvg6r401qqek32/gauge`, endpoint dry-run, confirmed create, and public-URL verification. See docs/deployment.md.
 
 ## Known limitations
 
