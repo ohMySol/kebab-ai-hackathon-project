@@ -25,6 +25,21 @@ The app loads `data/supplier_risk_dataset.csv` (the organizer file, 10,000 suppl
 
 Restart the process after editing `.env`.
 
+## Team setup (second developer)
+
+`.env` is never committed. The shared source of truth for the three secrets is the Nebius MysteryBox secret `gauge-secrets` in `group50-project`; every project editor can read it.
+
+```bash
+git clone git@github.com:ohMySol/kebab-ai-hackathon-project.git && cd kebab-ai-hackathon-project
+python3.12 -m venv .venv && source .venv/bin/activate && pip install -r requirements.txt
+curl -sSL https://artifacts.nebius.cloud/cli/install.sh | bash          # Nebius CLI, once
+~/.nebius/bin/nebius profile create hackathon --parent-id project-e05pcx4nln00sb3fae3bgx   # browser login
+deploy/pull-env.sh                                                        # writes .env from gauge-secrets
+python run.py                                                             # http://localhost:8000, login jury
+```
+
+Without CLI access, open the console: group50-project → SecretStash → `gauge-secrets` → current version, and copy the three values into a `.env` made from `env.example`. If a key is rotated, update the secret (`deploy/nebius-deploy.sh secrets` reads the new `.env`) and redeploy; both teammates then rerun `pull-env.sh`.
+
 ## The buyer journey
 
 1. **Purchase brief**: component text, priority profile (quality first, balanced, financial resilience), a maximum source Total Risk Index and an optional candidate scope (your approved supplier IDs).

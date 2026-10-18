@@ -9,3 +9,4 @@ data/private/
 data/reports/
 deploy/.state
 deploy/.create.out
+.env.bak
