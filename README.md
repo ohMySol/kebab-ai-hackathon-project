@@ -15,7 +15,7 @@ pip install -r requirements.txt
 cp env.example .env                  # the hidden .env.example is identical
 ```
 
-Edit `.env`: set `APP_PASSWORD` (jury login, username `jury`), `NEBIUS_API_KEY` (Token Factory API key, not the Cloud login or a promo code) and `TAVILY_API_KEY`. Blank values and `__SET_ME__` placeholders count as unconfigured. Never commit `.env`.
+Edit `.env`: set `APP_PASSWORD` (jury login, username `jury`; or `APP_AUTH=off` to run without any login), `NEBIUS_API_KEY` (Token Factory API key, not the Cloud login or a promo code) and `TAVILY_API_KEY`. Blank values and `__SET_ME__` placeholders count as unconfigured. Never commit `.env`.
 
 ```bash
 python run.py                        # http://localhost:8000

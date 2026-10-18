@@ -38,7 +38,7 @@ Choose the preset after `preflight` lists what the project offers, for example `
 | Disk | 32 GiB |
 | Port | `8000/http` → managed `https://` URL |
 | Platform auth | `--auth none`. The app enforces HTTP Basic login on every page and API route; a normal browser cannot add a platform bearer header, so platform token auth would lock the jury out. `/healthz` is the only public route. |
-| Env | `NEBIUS_MODEL`, `APP_USERNAME=jury`, `SUPPLIER_CSV=/app/data/supplier_risk_dataset.csv`, `REPORTS_DIR=/app/data/reports`, `PORT=8000` |
+| Env | `NEBIUS_MODEL`, `APP_USERNAME=jury`, optionally `APP_AUTH=off` to remove the login (then anyone with the URL can spend the API credits), `SUPPLIER_CSV=/app/data/supplier_risk_dataset.csv`, `REPORTS_DIR=/app/data/reports`, `PORT=8000` |
 | Secret env | `NEBIUS_API_KEY`, `TAVILY_API_KEY`, `APP_PASSWORD` from MysteryBox secret `gauge-secrets` |
 | Replicas | one container, one worker (dataset and research jobs are in process memory; reports also on the container disk) |
 

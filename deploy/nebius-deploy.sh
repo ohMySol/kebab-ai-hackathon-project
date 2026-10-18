@@ -87,7 +87,7 @@ case "${1:-}" in
       N mysterybox secret-version create --secret-id "$sid" --payload "$payload" --set-primary --format json | jq '{id: .resource_id}'
     else
       echo "Creating secret $SECRET_NAME"
-      N mysterybox secret create --parent-id "$PROJECT" --name "$SECRET_NAME" --description "Gauge app secrets" --secret-version-payload "$payload" --format json | jq '{id: .resource_id}'
+      N mysterybox secret create --parent-id "$PROJECT" --name "$SECRET_NAME" --description "Gauge app secrets" --secret-version-payload "$payload" >/dev/null
     fi
     echo "Secret ready. Values were not printed."
     ;;
@@ -108,7 +108,9 @@ case "${1:-}" in
     [[ -z "$existing" ]] || { echo "Endpoint $NAME already exists ($existing). Use status/stop/start or delete-command."; exit 2; }
     read -r -p "Create this endpoint now? It bills hourly until deleted. [yes/no] " ok
     [[ "$ok" == "yes" ]] || { echo "Cancelled"; exit 1; }
-    "${cmd[@]}" --format json | jq '{id: .resource_id}'
+    "${cmd[@]}" --async > deploy/.create.out 2>&1 || { cat deploy/.create.out; exit 1; }
+    cat deploy/.create.out
+    echo "Created. Poll with: deploy/nebius-deploy.sh status"
     ;;
   status)
     need_project

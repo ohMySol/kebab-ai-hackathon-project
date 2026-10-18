@@ -153,7 +153,14 @@ def load_initial_dataset():
 load_initial_dataset()
 
 
+def auth_enabled():
+    """APP_AUTH=off disables the login (open demo). Default: Basic auth with APP_USERNAME / APP_PASSWORD."""
+    return setting("APP_AUTH", "on").lower() not in ("off", "false", "0", "none")
+
+
 def authorize(credentials: HTTPBasicCredentials | None = Depends(HTTPBasic(auto_error=False))):
+    if not auth_enabled():
+        return
     password, username = setting("APP_PASSWORD"), setting("APP_USERNAME", "jury")
     if not password:
         raise HTTPException(503, "Set APP_PASSWORD before starting Gauge. See .env.example.")
@@ -188,7 +195,7 @@ def provider_state(name, env):
 def status():
     with LOCK:
         return {"rows": len(STATE["rows"]), "name": STATE["name"], "sample": STATE["sample"],
-                "version": STATE["version"], "model": model_name(),
+                "version": STATE["version"], "model": model_name(), "auth": auth_enabled(),
                 "nemotron": bool(setting("NEBIUS_API_KEY")), "tavily": bool(setting("TAVILY_API_KEY")),
                 "providers": {"nemotron": provider_state("nemotron", "NEBIUS_API_KEY"),
                               "tavily": provider_state("tavily", "TAVILY_API_KEY")},

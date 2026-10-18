@@ -39,6 +39,13 @@ class WorkflowTests(unittest.TestCase):
         with patch.dict(os.environ, {"APP_PASSWORD": "__SET_ME__"}):
             self.assertEqual(self.client.get("/api/status").status_code, 503)
 
+    def test_auth_can_be_switched_off(self):
+        with patch.dict(os.environ, {"APP_AUTH": "off", "APP_PASSWORD": ""}):
+            anon = TestClient(m.app)
+            self.assertEqual(anon.get("/").status_code, 200)
+            self.assertFalse(anon.get("/api/status").json()["auth"])
+        self.assertEqual(TestClient(m.app).get("/api/status").status_code, 401)
+
     def test_placeholder_keys_are_unconfigured(self):
         with patch.dict(os.environ, {"NEBIUS_API_KEY": "__SET_ME__", "TAVILY_API_KEY": "   "}):
             status = self.client.get("/api/status").json()
