@@ -1,5 +1,7 @@
 # Deployment
 
+**Current deployment (18 Oct 2026):** endpoint `gauge`, id `aiendpoint-e05yarz65dfd332df3`, project `group50-project` (`project-e05pcx4nln00sb3fae3bgx`), registry `registry-e05acvg6r401qqek32`, secret `gauge-secrets`, image `gauge:3bceda5`. URL: https://port8000-md1mkr09353njez.tunnel.applications.uk-south2.nebius.cloud
+
 Target: one **CPU-only Nebius Serverless Endpoint** in the assigned hackathon project, region `uk-south2`. Nemotron is hosted by Token Factory, so no GPU is used. The helper `deploy/nebius-deploy.sh` wraps every step; each step prints what it will do and only `create` is a billable write.
 
 ## Prerequisites (human steps)

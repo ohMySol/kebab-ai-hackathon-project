@@ -71,6 +71,8 @@ The image bundles the organizer CSV, runs as a non-root user, exposes port 8000 
 
 ## Deploy on Nebius
 
+Live demo (hackathon project, login `jury`): https://port8000-md1mkr09353njez.tunnel.applications.uk-south2.nebius.cloud
+
 See [docs/deployment.md](docs/deployment.md) and `deploy/nebius-deploy.sh`. Target: one CPU-only Serverless Endpoint in the assigned hackathon project (`uk-south2`), image in the project registry, secrets from MysteryBox, platform bearer auth **off** so the jury's browser reaches the app's own login.
 
 ## Two-minute demo script

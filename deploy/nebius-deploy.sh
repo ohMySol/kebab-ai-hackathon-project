@@ -126,7 +126,7 @@ case "${1:-}" in
   logs)
     need_project
     id="$(N ai endpoint get-by-name --name "$NAME" --parent-id "$PROJECT" --format json | jq -r '.metadata.id')"
-    N ai endpoint logs --id "$id" 2>&1 | tail -80
+    N ai endpoint logs "$id" --tail 80 2>&1
     ;;
   stop|start)
     need_project

@@ -14,9 +14,20 @@
 - **Research live**: Knorr-Bremse completed in 17 s: Nemotron planned 3 searches, Tavily returned 12 sources, Nemotron decided no follow-up was needed, and wrote a cited brief with all citations valid. An earlier failure (empty JSON) was traced to reasoning tokens consuming `max_tokens`; JSON steps now run with thinking disabled and empty answers are retried.
 - **Nebius Cloud**: profile `hackathon` authenticated; project `group50-project` (`project-e05pcx4nln00sb3fae3bgx`) readable; CPU platform `cpu-d3` with presets from 2 vCPU / 8 GB ($0.066/h) upward; quotas 20 non-GPU vCPU, 1 registry, 1 public IP; registry `registry-e05acvg6r401qqek32` created; MysteryBox secret `gauge-secrets` created from `.env`.
 
-## In progress
+## Deployed and verified on the public URL (18 Oct 2026, 16:45–16:52)
 
-- Image push to `cr.uk-south2.nebius.cloud/e05acvg6r401qqek32/gauge`, endpoint dry-run, confirmed create, and public-URL verification. See docs/deployment.md.
+- Endpoint `gauge` (`aiendpoint-e05yarz65dfd332df3`) in `group50-project`, `cpu-d3` / `2vcpu-8gb`, image `gauge:3bceda5`, platform auth off, app login on. URL: https://port8000-md1mkr09353njez.tunnel.applications.uk-south2.nebius.cloud
+- `/healthz` 200; `/` answers 401 with the app's Basic realm; login with `jury` works.
+- `/api/status` reports 10,000 rows; connection test: Nemotron answered, Tavily returned a result.
+- Live chat through the public URL: "switch to financial resilience and explain #1 vs #2" ran `rank_suppliers` → `inspect_suppliers` in 6 s; "inspect SUPP_00003" ran `inspect_suppliers` in 4 s; the browser suggestion button produced a 553-character answer with a visible tool trace.
+- Live research through the public URL: Knorr-Bremse completed in 21 s with 3 planned searches, a follow-up search chosen by Nemotron after it spotted a U.S. DOJ antitrust filing in the excerpts, 16 sources, and a cited brief with no citation warnings. Three completed reports are listed in the research dialog on the deployment.
+- Playwright on the public URL at 1440×900 and 390×844: 20 rows, profile switch, exclusion, comparison (26 rows), detail (19 metrics, 6 facts), slider, candidate scope, brief download, no page overflow, no console errors.
+
+## Operations
+
+- Status / logs / stop / start: `NEBIUS_PROJECT_ID=project-e05pcx4nln00sb3fae3bgx deploy/nebius-deploy.sh status|logs|stop|start`
+- Delete when the event is over: `deploy/nebius-deploy.sh delete-command` prints the command. The endpoint bills about $0.066 per hour until deleted.
+- A second image `gauge:036fbd3` (adds the `APP_AUTH=off` switch) is pushed but not deployed.
 
 ## Known limitations
 
