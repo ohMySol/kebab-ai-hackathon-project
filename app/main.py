@@ -16,6 +16,12 @@ from pathlib import Path
 from urllib.parse import urlparse
 
 import httpx
+
+try:  # Use the operating-system trust store so corporate TLS proxies work locally; harmless in containers.
+    import truststore
+    truststore.inject_into_ssl()
+except ImportError:
+    pass
 from fastapi import Depends, FastAPI, File, HTTPException, UploadFile
 from fastapi.responses import FileResponse
 from fastapi.security import HTTPBasic, HTTPBasicCredentials

@@ -8,9 +8,11 @@
 - **Model ID**: `nvidia/Nemotron-3.5-Super-VL` is present in the public Token Factory catalog with function calling (checked 18 Oct 2026).
 - **Nebius CLI** 0.12.291 installed; the `nebius-cloud` skills plugin is installed for the Claude Code session.
 
+- **Tavily live**: the connection test performed a real basic search with the configured key (18 Oct 2026, 16:09). On the corporate laptop this needed the operating-system trust store (`truststore`), now wired in at startup.
+
 ## Blocked on credentials or sign-in (not yet verified)
 
-- Live Token Factory request, a real Nemotron tool call through `/api/chat`, and a cited Tavily research report. The code paths exist and are exercised with mocks; `scratchpad/live_check.py` (session scratchpad) runs them once `.env` has real keys.
+- Token Factory: the key placed in `.env` is rejected with HTTP 401 ("Couldn't authenticate") and does not look like a Token Factory key. A real Nemotron tool call through `/api/chat` and a cited research report therefore remain unverified live; both paths are exercised with mocks.
 - Nebius deployment: needs the assigned `project-...` ID and a browser login (`nebius profile create hackathon --parent-id <project>`). `deploy/nebius-deploy.sh` then runs preflight, registry, build/push, dry-run and the single confirmed create.
 
 ## Known limitations
