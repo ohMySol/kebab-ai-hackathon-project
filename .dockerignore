@@ -1,0 +1,11 @@
+.env
+.env.*
+.venv
+.git
+__pycache__
+*.pyc
+.DS_Store
+tests
+docs
+README_participant_instruction.md
+data/reports

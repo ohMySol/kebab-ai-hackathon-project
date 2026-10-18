@@ -1,0 +1,41 @@
+{
+  "fixture_note": "Three suppliers and partial columns copied from the user's pasted sample. Component eligibility is a fictional demo assumption. This is not the organizer's full CSV.",
+  "source_rows": [
+    {
+      "supplierID": "SUPP_00003",
+      "Supplier Name": "Advanced Systems 395",
+      "Total_Risk_Index": 34,
+      "Total_Risk_Index_Level": "Medium",
+      "Quality_Risk_Score": 15,
+      "Quality_Risk_Score_Level": "Low",
+      "Operational_Resilience_Score": 23,
+      "Operational_Resilience_Score_Level": "Low",
+      "Financial_Health_Score": 36,
+      "Financial_Health_Score_Level": "Medium"
+    },
+    {
+      "supplierID": "SUPP_00006",
+      "Supplier Name": "Apex Solutions 621",
+      "Total_Risk_Index": 25,
+      "Total_Risk_Index_Level": "Medium",
+      "Quality_Risk_Score": 23,
+      "Quality_Risk_Score_Level": "Low",
+      "Operational_Resilience_Score": 26,
+      "Operational_Resilience_Score_Level": "Medium",
+      "Financial_Health_Score": 18,
+      "Financial_Health_Score_Level": "Low"
+    },
+    {
+      "supplierID": "SUPP_00018",
+      "Supplier Name": "Global Logistics 175",
+      "Total_Risk_Index": 80,
+      "Total_Risk_Index_Level": "Critical",
+      "Quality_Risk_Score": 74,
+      "Quality_Risk_Score_Level": "High",
+      "Operational_Resilience_Score": 95,
+      "Operational_Resilience_Score_Level": "Critical",
+      "Financial_Health_Score": 70,
+      "Financial_Health_Score_Level": "High"
+    }
+  ]
+}

@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#f2f2f4"><title>Gauge — Supplier decision room</title>
+<link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700;800&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="/assets/app.css" rel="stylesheet">
+</head>
+<body>
+<aside class="sidebar">
+  <a class="brand" href="/" aria-label="Gauge home"><span class="brand-icon">◴</span>gauge<span class="beta">LAB</span></a>
+  <button class="new" id="reset">＋ New decision</button>
+  <div class="nav-label">WORKSPACE</div>
+  <button class="nav active" id="explorer"><span>☷</span> Supplier explorer <span class="count" id="dataset-count">—</span></button>
+  <button class="nav" id="open-compare"><span>▥</span> Compare <span class="count" id="compare-count">0 / 20</span></button>
+  <button class="nav" id="open-research"><span>◎</span> Company research <span class="tiny-dot" id="research-dot"></span></button>
+  <div class="nav-label">YOUR DECISION</div>
+  <div class="decision-link"><span class="tiny-dot green"></span><span id="sidebar-component">Train brake system</span></div>
+  <p class="sidebar-note">From a long list to a defensible choice. Every score stays connected to its source.</p>
+  <div class="sidebar-bottom">
+    <button class="upload" id="upload-button">↥ Import supplier CSV</button>
+    <input type="file" id="csv-file" accept=".csv,.tsv,text/csv" hidden>
+    <div class="user"><span class="avatar">J</span><div>Jury workspace<small>Siemens challenge · Berlin</small></div></div>
+  </div>
+</aside>
+<main>
+  <header><div class="crumb">Workspace <span>/</span> <b>Supplier decision room</b></div><div class="header-chips"><span class="chip" id="data-status">Loading dataset</span><button class="chip" id="model-status" title="Click to test the live connections">Checking Nemotron</button><button class="chip" id="search-status" title="Click to test the live connections">Checking Tavily</button></div></header>
+  <div class="page">
+    <div class="eyebrow"><span class="tiny-dot green"></span> PROCUREMENT INTELLIGENCE</div>
+    <div class="heading"><div><h1>A shortlist you<br>can stand behind.</h1><p>Explore the risk. Understand the tradeoff. Make your next move.</p></div><button class="outline" id="download-memo">↗ Export sourcing brief</button></div>
+    <div id="notice" class="notice" role="status" hidden></div>
+    <section class="brief" aria-label="Purchase brief">
+      <div class="section-label"><span>01</span> THE PURCHASE BRIEF</div>
+      <div class="brief-input"><label for="component">What are you sourcing?</label><input id="component" value="Train brake system" maxlength="120"><button class="black" id="rank">Build shortlist <span>↗</span></button></div>
+      <div class="controls"><div class="profiles" aria-label="Ranking priority"><button data-profile="quality_first" class="selected">Quality first</button><button data-profile="balanced">Balanced</button><button data-profile="financial_first">Financial resilience</button></div><label class="risk-filter" for="risk-limit">Max source risk index <input id="risk-limit" type="range" min="0" max="100" value="100"><output id="risk-value">100</output></label></div>
+      <details class="scope"><summary>Have an approved supplier list? Set the candidate scope <span>＋</span></summary><label for="candidate-ids">Supplier IDs, separated by commas. This narrows the pool to your known candidates; the risk dataset itself does not say who makes this component.</label><textarea id="candidate-ids" rows="2" placeholder="SUPP_00003, SUPP_00006, …"></textarea></details>
+    </section>
+    <div class="funnel" id="funnel" aria-live="polite"></div>
+    <div class="workspace-grid">
+      <section class="shortlist" aria-label="Supplier shortlist">
+        <div class="section-heading"><div><div class="section-label"><span>02</span> THE SHORTLIST</div><h2>Risk in perspective<span id="shortlist-size"></span></h2></div><input id="supplier-search" class="search" aria-label="Filter suppliers by name or ID" placeholder="Search name or ID…"></div>
+        <div id="capability" class="data-note"></div>
+        <div class="table-wrap"><table><thead><tr><th># / SUPPLIER</th><th>BUYER SCORE <span title="App-defined weighted score. Lower is better; see the weights below.">ⓘ</span></th><th>SOURCE TRI</th><th>QUALITY / OPS / FIN.</th><th>DELIVERY</th><th></th></tr></thead><tbody id="supplier-rows"></tbody></table></div>
+        <div id="excluded" class="excluded"></div>
+        <div class="table-footer"><span id="formula"></span><button class="text-btn" id="restore" hidden>Restore all excluded</button></div>
+      </section>
+      <aside class="insight-column">
+        <section class="recommendation" id="recommendation"></section>
+        <section class="agent-panel"><div class="agent-heading"><div class="brand-icon small">◴</div><div><b>Ask Gauge</b><small id="agent-label">Nemotron · Nebius Token Factory</small></div><button class="text-btn" id="test-connections" title="Send a small live request to Token Factory and Tavily">Test connections</button><span class="agent-dot" id="agent-dot"></span></div><div id="messages" class="messages" aria-live="polite"><div class="message assistant">Which tradeoff matters most? Ask about a supplier, compare risks or tell me a candidate is unavailable.</div></div><div id="tool-trace" class="tool-trace"></div><div class="suggestions"><button data-prompt="Why does the first supplier rank above the second? Use their source scores.">Explain this ranking ↗</button><button data-prompt="Exclude the current first-ranked supplier as unavailable, then rank again and explain the next choice.">What if #1 is unavailable? ↗</button><button data-prompt="Inspect the top three suppliers and tell me which hidden risk scores (outside quality, operations and financial) the buyer should look at.">Hidden risks in the top 3 ↗</button></div><form id="chat-form"><textarea id="chat-input" placeholder="Ask a question about this decision…" rows="2" maxlength="2500" aria-label="Question to Gauge"></textarea><button aria-label="Send question" id="send" class="send">↑</button></form></section>
+      </aside>
+    </div>
+    <section class="research-banner"><div class="research-icon">◎</div><div><div class="eyebrow">GO BEYOND THE CSV</div><h3>What does the outside world say?</h3><p>Research a real company. Follow the evidence, inspect red flags and see what still needs checking.</p></div><button class="outline" id="banner-research">Research a company ↗</button></section>
+    <footer><span>Built with <b>Nemotron</b> · Nebius Token Factory · Tavily</span><span>Challenge by <img src="/assets/siemens-wordmark.svg" alt="Siemens"></span></footer>
+  </div>
+</main>
+<dialog id="detail-dialog"><div class="dialog-head"><div><div class="section-label">SOURCE RECORD</div><h2 id="detail-title"></h2></div><button class="close" data-close="detail-dialog" aria-label="Close">×</button></div><div id="detail-content"></div></dialog>
+<dialog id="compare-dialog" class="wide-dialog"><div class="dialog-head"><div><div class="section-label">SIDE BY SIDE</div><h2>The tradeoff, made visible.</h2></div><button class="close" data-close="compare-dialog" aria-label="Close">×</button></div><p class="muted">Original dataset risk scores. Lower is better. Missing values stay unknown.</p><div id="compare-content" class="table-wrap"></div><div class="dialog-actions"><button class="black" id="explain-compare">Explain this tradeoff with Nemotron ↗</button><button class="outline" id="clear-compare">Clear selection</button></div></dialog>
+<dialog id="research-dialog" class="wide-dialog"><div class="dialog-head"><div><div class="section-label">LIVE COMPANY RESEARCH</div><h2>Follow the evidence.</h2></div><button class="close" data-close="research-dialog" aria-label="Close">×</button></div><p class="muted">Use a real company name. Anonymized CSV suppliers are kept separate and never mapped to real identities.</p><form id="research-form" class="research-form"><input id="company-name" placeholder="Real company name, e.g. Knorr-Bremse" aria-label="Real company name" minlength="2" maxlength="150" required><button class="black" id="research-submit">Start research ↗</button></form><div class="quick-picks">Examples: <button type="button" data-company="Knorr-Bremse">Knorr-Bremse</button><button type="button" data-company="Wabtec">Wabtec</button><button type="button" data-company="Nexans">Nexans</button></div><div id="reports-list" class="reports-list"></div><div id="research-content" aria-live="polite"><div class="empty"><span>◎</span><h3>A research trail you can inspect.</h3><p>Nemotron plans searches, Tavily retrieves sources, and the agent decides whether a follow-up is needed.</p></div></div></dialog>
+<div class="toast" id="toast" role="status" hidden></div>
+<script src="/assets/app.js" defer></script>
+</body></html>
