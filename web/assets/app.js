@@ -16,7 +16,7 @@ let result = null, service = null, compared = new Set(), lastResearch = null, po
 async function api(path, body, method='POST') {
   const res = await fetch('/api'+path, {method: body === undefined ? 'GET' : method, headers: body === undefined ? {} : {'Content-Type':'application/json'}, body: body === undefined ? undefined : JSON.stringify(body)});
   let data; try { data = await res.json(); } catch { throw new Error(`Request failed (${res.status}). Check the server.`); }
-  if (!res.ok) throw new Error(typeof data.detail === 'string' ? data.detail : `Request failed (${res.status}). Check the supplied data.`);
+  if (!res.ok) throw new Error(typeof data.detail === 'string' ? data.detail : Array.isArray(data.detail) && data.detail[0]?.msg ? `${data.detail[0].loc?.at(-1) ?? 'Input'}: ${data.detail[0].msg}.` : `Request failed (${res.status}). Check the supplied data.`);
   return data;
 }
 function toast(text, ms=6500) { clearTimeout(toastTimer); $('#toast').textContent = text; $('#toast').hidden = false; toastTimer = setTimeout(() => $('#toast').hidden = true, ms); }
@@ -325,7 +325,7 @@ function setMode(m) {
   mode = m; document.querySelectorAll('[data-mode]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.mode === m)));
   $('#ask').placeholder = m === 'research' ? 'Ask Gauge about a supplier or a purchase…' : 'Ask about the supplier dataset…';
 }
-function submitAsk(q, m = mode) { q = q.trim(); if (!q) return; $('#ask').value = ''; if (m === 'data') askData(q); else askResearch(q); }
+function submitAsk(q, m = mode) { q = q.trim(); if (!q) return; if (m === 'research' && q.length < 3) { toast('Write a full question that names the company, e.g. “Is it OK to buy from French company X now?”'); return; } $('#ask').value = ''; if (m === 'data') askData(q); else askResearch(q); }
 $('#ask-form').onsubmit = e => { e.preventDefault(); submitAsk($('#ask').value); };
 $('#ask').onkeydown = e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); $('#ask-form').requestSubmit(); } };
 $('#reset').addEventListener('click', () => { polls.forEach(t => clearTimeout(t)); polls.clear(); thread.innerHTML = heroHtml; $('#thread-title').textContent = 'New research'; setMode('research'); $('#ask').focus(); });
