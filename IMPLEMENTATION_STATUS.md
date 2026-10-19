@@ -24,6 +24,21 @@
 - Live research through the public URL: Knorr-Bremse completed in 21 s with 3 planned searches, a follow-up search chosen by Nemotron after it spotted a U.S. DOJ antitrust filing in the excerpts, 16 sources, and a cited brief with no citation warnings. Three completed reports are listed in the research dialog on the deployment.
 - Playwright on the public URL at 1440×900 and 390×844: 20 rows, profile switch, exclusion, comparison (26 rows), detail (19 metrics, 6 facts), slider, candidate scope, brief download, no page overflow, no console errors.
 
+## Torn down (19 October 2026)
+
+The hackathon ended. All Gauge resources in `group50-project` were deleted to stop every charge: endpoints `gauge`, `gauge-v2`, `gauge-open`, registry `gauge-registry` with its six image artifacts, and secret `gauge-secrets`. The project now holds no endpoints, no registries, no VMs, no disks; only the organizers' `hackathon-object-storage` secret remains. The live URLs in this file and in docs/deployment.md are therefore dead. Provider keys that had been shared in a chat were rotated; the current keys live only in the local `.env`.
+
+## Redeploy from scratch (about ten minutes)
+
+```bash
+export NEBIUS_PROJECT_ID=project-e05pcx4nln00sb3fae3bgx
+~/.nebius/bin/nebius --profile hackathon iam whoami        # refreshes the browser login if needed
+deploy/nebius-deploy.sh registry && deploy/nebius-deploy.sh build && deploy/nebius-deploy.sh secrets
+deploy/nebius-deploy.sh dry-run && deploy/nebius-deploy.sh create   # new URL; ~$0.066/h while it exists
+deploy/nebius-deploy.sh status                                       # wait for RUNNING, then smoke
+```
+Afterwards run one company research so a report is available for the demo, and `stop` or delete again when done.
+
 ## Operations
 
 - Status / logs / stop / start: `NEBIUS_PROJECT_ID=project-e05pcx4nln00sb3fae3bgx deploy/nebius-deploy.sh status|logs|stop|start`
